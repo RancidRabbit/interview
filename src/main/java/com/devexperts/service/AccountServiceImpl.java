@@ -40,16 +40,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     /* Foremost let's check that all accounts are exist and we have enough money on balance to transfer */
-    public void transfer(Account source, Account target, double amount) throws DataValidationException, MoneyAmountException {
-        if (source == null | target == null)
-            throw new DataValidationException("Account doesn't exist!");
-        if (source.getBalance() < amount | amount <= 0.)
-            throw new MoneyAmountException("Not enough money to transfer!");
+    public void transfer(Account source, Account target, double amount) {
 
-        source.setBalance(source.getBalance() - amount);
-        target.setBalance(target.getBalance() + amount);
+
+
+
+
+
+
+
 
     }
+
+
+
+
 
 
 }
