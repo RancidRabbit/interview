@@ -23,7 +23,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void createAccount(Account account) throws IllegalArgumentException {
 
-        if(acc.containsKey(account.getAccountKey().getAccountId())) throw new IllegalArgumentException();
+        if (acc.containsKey(account.getAccountKey().getAccountId())) throw new IllegalArgumentException();
 
         acc.put(account.getAccountKey().getAccountId(), account);
     }
@@ -42,19 +42,17 @@ public class AccountServiceImpl implements AccountService {
     /* Foremost let's check that all accounts are exist and we have enough money on balance to transfer */
     public void transfer(Account source, Account target, double amount) {
 
-
-
-
-
-
-
-
+        source.setBalance(source.getBalance() - amount);
+        target.setBalance(target.getBalance() + amount);
 
     }
 
 
-
-
-
-
 }
+
+
+
+
+
+
+

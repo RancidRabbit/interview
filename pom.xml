@@ -87,6 +87,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -109,8 +114,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <target>${java.version}</target>
-                    <source>${java.version}</source>
+                    <target>11</target>
+                    <source>11</source>
                     <fork>true</fork>
                     <encoding>UTF8</encoding>
                     <useIncrementalCompilation>false</useIncrementalCompilation>
