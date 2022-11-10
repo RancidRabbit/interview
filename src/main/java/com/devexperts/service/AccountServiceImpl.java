@@ -2,14 +2,18 @@ package com.devexperts.service;
 
 import com.devexperts.account.Account;
 import com.devexperts.account.AccountKey;
+import com.devexperts.entity.Receiver;
+import com.devexperts.entity.Sender;
 import com.devexperts.exceptions.DataValidationException;
 import com.devexperts.exceptions.MoneyAmountException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
 
@@ -46,8 +50,28 @@ public class AccountServiceImpl implements AccountService {
         if (source.getBalance() < amount | amount <= 0.)
             throw new MoneyAmountException("Not enough money to transfer!");
 
-        source.setBalance(source.getBalance() - amount);
-        target.setBalance(target.getBalance() + amount);
+        Exchange exchange = new Exchange();
+        Sender sender = new Sender(exchange);
+        Receiver receiver = new Receiver(exchange);
+
+        exchange.setSender(source);
+        exchange.setReceiver(target);
+        exchange.setAmount(amount);
+
+        Thread scr = new Thread(sender);
+        Thread dst = new Thread(receiver);
+
+        scr.start();
+        dst.start();
+
+        try {
+            scr.join();
+            dst.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        log.info("Money has been transferred successfully");
 
     }
 

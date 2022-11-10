@@ -10,7 +10,7 @@ package com.devexperts.account;
 public class AccountKey {
     private final long accountId;
 
-    public AccountKey(long accountId) {
+    private AccountKey(long accountId) {
         this.accountId = accountId;
     }
 
