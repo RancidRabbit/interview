@@ -11,105 +11,96 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 @SpringBootTest(classes = AccountServiceImpl.class)
 public class AccountServiceImplTest {
 
     @Autowired
     private AccountServiceImpl accountService;
 
-    @Test
-    public void createAccountTest(){
-        Account account = new Account(new AccountKey(5L), "Pete", "Johnson", 1000.);
-
-        accountService.createAccount(account);
-
-        Assertions.assertThrows(IllegalArgumentException.class, ()-> accountService.createAccount(account));
-
-    }
-
-
-
-
-
-    @Test
-    public void getAccountTest() {
-
-        Account account = new Account(new AccountKey(1L), "Pete", "Johnson", 1000.);
-
-        accountService.createAccount(account);
-
-
-        Assertions.assertEquals(account, accountService.getAccount(1L));
-
-    }
-
-    @Test
-    public void getAccountTest1() {
-
-        Account account = new Account(new AccountKey(3L), "Pete", "Johnson", 1000.);
-
-        accountService.createAccount(account);
-
-        Assertions.assertNull(accountService.getAccount(4L));
-    }
 
     @Test
     public void transferTest() {
 
-        Account account = new Account(new AccountKey(1L), "Pete", "Johnson", 1000.);
-        Account account2 = new Account(new AccountKey(1L), "Jack", "McGee", 500.);
+        try {
+            Constructor<AccountKey> constr = AccountKey.class.getDeclaredConstructor(long.class);
+            constr.setAccessible(true);
+            Account src = new Account(constr.newInstance(1L), "Лолец", "Лольцов", 1000.);
+            Account dst = new Account(constr.newInstance(2L), "Бублик", "Бубликов", 100.);
+
+            accountService.transfer(src, dst, 200.);
+            System.out.println("\n".repeat(2));
+            accountService.transfer(src, dst, 200.);
 
 
-        accountService.transfer(account, account2, 200.);
+            Assertions.assertEquals(src.getBalance(), 600);
+            Assertions.assertEquals(dst.getBalance(), 500);
 
-        Assertions.assertEquals(800., account.getBalance());
-        Assertions.assertEquals(700., account2.getBalance());
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
     }
-
 
     @Test
     public void transferTest1() {
+        try {
+            Constructor<AccountKey> constr = AccountKey.class.getDeclaredConstructor(long.class);
+            constr.setAccessible(true);
+            Account src = new Account(constr.newInstance(1L), "Лолец", "Лольцов", 1000.);
+            Account dst = new Account(constr.newInstance(2L), "Бублик", "Бубликов", 100.);
 
-        Account account = new Account(new AccountKey(1L), "Pete", "Johnson", 1000.);
+            Assertions.assertThrows(MoneyAmountException.class, () -> accountService.transfer(src, dst, 2000.));
 
-        Account account2 = null;
-
-        Assertions.assertThrows(DataValidationException.class, () -> accountService.transfer(account, account2, 200.));
-
-
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void transferTest2() {
+        try {
+            Constructor<AccountKey> constr = AccountKey.class.getDeclaredConstructor(long.class);
+            constr.setAccessible(true);
+            Account src = new Account(constr.newInstance(1L), "Лолец", "Лольцов", 1000.);
+            Account dst = new Account(constr.newInstance(2L), "Бублик", "Бубликов", 100.);
 
-        Account account = new Account(new AccountKey(1L), "Grace", "Caldwell", 200.);
-        Account account2 = new Account(new AccountKey(1L), "Maud", "Ramsey", 500.);
+            Assertions.assertThrows(MoneyAmountException.class, () -> accountService.transfer(src, dst, -200));
 
-
-        Assertions.assertThrows(MoneyAmountException.class, () -> accountService.transfer(account, account2, 205));
-
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void transferTest3() {
 
-        Account account = new Account(new AccountKey(1L), "Grace", "Caldwell", 200.);
-        Account account2 = new Account(new AccountKey(1L), "Maud", "Ramsey", 500.);
+        Account src = null;
 
-        accountService.transfer(account, account2, 200.);
+        Account dst = null;
 
-        Assertions.assertEquals(0., account.getBalance());
-        Assertions.assertEquals(700., account2.getBalance());
+        Assertions.assertThrows(DataValidationException.class, () -> accountService.transfer(src, dst, 10));
+
 
     }
 
     @Test
-    public void transferTest4() {
+    public void transferTest4(){
 
-        Account account = new Account(new AccountKey(1L), "Grace", "Caldwell", 200.);
-        Account account2 = new Account(new AccountKey(1L), "Maud", "Ramsey", 500.);
+        try {
+            Constructor<AccountKey> constr = AccountKey.class.getDeclaredConstructor(long.class);
+            constr.setAccessible(true);
+            Account src = new Account(constr.newInstance(1L), "Лолец", "Лольцов", 1000.);
+            Account dst = null;
 
-        Assertions.assertThrows(MoneyAmountException.class, ()-> accountService.transfer(account, account2, -100.));
+            Assertions.assertThrows(DataValidationException.class, () -> accountService.transfer(src, dst, 10));
+
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

@@ -1,5 +1,7 @@
 package com.devexperts.account;
 
+import com.devexperts.service.Exchange;
+
 import java.util.Objects;
 
 public class Account {
@@ -8,12 +10,14 @@ public class Account {
     private final String lastName;
     private Double balance;
 
+
     public Account(AccountKey accountKey, String firstName, String lastName, Double balance) {
         this.accountKey = accountKey;
         this.firstName = firstName;
         this.lastName = lastName;
         this.balance = balance;
     }
+
 
     public AccountKey getAccountKey() {
         return accountKey;
